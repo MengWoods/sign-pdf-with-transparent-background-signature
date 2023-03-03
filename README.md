@@ -22,4 +22,7 @@ python main.py -t merge -i a.pdf b.pdf
 
 ## TODO
 - [ ] Add watermark
-- [ ] Add signature
+- [ ] Add signature assigning postion
+- [ ] Rotate a page
+- [ ] Print basic info of PDF
+- [ ] Separate a PDF to multiple ones
