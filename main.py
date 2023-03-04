@@ -9,6 +9,7 @@ p = con.configargparse.ArgParser()
 p.add('-t', '--type-of-manipulation', required=True, type=str, choices=['ocr', 'merge', 'watermark'], help="Type of PDF manipulation")
 p.add('-i', '--input-files', required=True, nargs='+', help="Input PDF files name(s), add space between two files")
 p.add('-w', '--watermark-file', type=str, help="Watermark PDF file")
+p.add('-p', '--watermark-page', type=str, choices=['first', 'last', 'all'], default='all', help="Add watermark to which page")
 options = p.parse_args()
 
 def main():
@@ -31,7 +32,9 @@ def main():
     
     elif options.type_of_manipulation == 'watermark':
         if len(options.input_files) == 1:
-            ut.watermark(BASE_PATH + options.input_files[0], BASE_PATH + options.watermark_file)
+            ut.watermark(BASE_PATH + options.input_files[0], \
+                         BASE_PATH + options.watermark_file, \
+                         options.watermark_page)
         else:
             con.logger.error("Watermark manipulation accepts 1 input file per time!")
 

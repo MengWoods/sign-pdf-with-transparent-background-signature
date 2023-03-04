@@ -13,9 +13,14 @@ Manipulate PDF (Portable Document Format) files with functions such as adding si
 Put the input files to `./files` folder, and `python main.py -h` to check arguments meaning.
 
 Here are some usage examples assuming you have `a.pdf`, `b.pdf`, `watermark.pdf` in `./files` folder:
-- OCR pdf and save to txt file: `python main.py -t ocr -i a.pdf`
-- Merge mulitple PDFs into one PDF: `python main.py -t merge -i a.pdf b.pdf`
-- Add watermark to every pages of PDF file: `python main.py -t watermark -i a.pdf -w watermark.pdf`
+- OCR pdf and save to txt file
+ `python main.py -t ocr -i a.pdf`
+- Merge mulitple PDFs into one PDF
+ `python main.py -t merge -i a.pdf b.pdf`
+- Add watermark to all pages of PDF file
+`python main.py -t watermark -i a.pdf -w watermark.pdf`;
+  Add watermark to first (or last) page only
+`python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
 
 ## TODO
 - [x] Add watermark
