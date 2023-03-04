@@ -10,15 +10,11 @@ Manipulate PDF (Portable Document Format) files with functions such as adding si
 
 ## Usage
 
-Put the input files to `./files` folder, and `python main.py -h` check how to use it.
+Put the input files to `./files` folder, and `python main.py -h` to check arguments meaning.
 
 Here are some usage examples assuming you have `a.pdf` and `b.pdf` in `./files` folder:
-```bash
-# OCR to txt file
-python main.py -t ocr -i a.pdf
-# Merge PDFs to one
-python main.py -t merge -i a.pdf b.pdf
-```
+- OCR pdf and save to txt file: `python main.py -t ocr -i a.pdf`
+- Merge mulitple PDFs into one PDF: `python main.py -t merge -i a.pdf b.pdf`
 
 ## TODO
 - [ ] Add watermark
