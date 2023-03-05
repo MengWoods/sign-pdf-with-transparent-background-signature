@@ -1,13 +1,14 @@
-# PDFmanipulation
+# signPDF
 
-Sign PDF file with signature photo, the tool extracts signature trace and merge it into PDF with specific page, postions and scale values.
+Sign PDF file with signature photo, the tool extracts signature trace and merge it into PDF with specific page, postions and scale values. Besides it, the repo supports other PDF operation such as merge, OCR, watermark functions.
 
 ## Introduction
 
 The tool takes PDF and signature image inputs and output a signed PDF file.
-
-In the picture below, you could see an example of the input photo and output result, the full PDF can be found from [files/example-pdf.pdf_signed.pdf](./files/example-pdf.pdf_signed.pdf):
 ![example result](./resource/introduction.png)
+
+In the picture above, you could see an example of the input photo and output result, the full signed PDF can be found from [files/example-pdf.pdf_signed.pdf](./files/example-pdf.pdf_signed.pdf):
+
 
 ## Requirements
 In Python 3.7 environment, install dependencies with `pip install -r requirements.txt`.
@@ -30,6 +31,6 @@ Here are some usage examples assuming you have input files in the `./files` fold
 
 ## TODO
 - [ ] Create class for util codes.
-- [ ] Refine codes with logger information.
+- [ ] Refine codes with logger information, better argument naming rule.
 - [ ] Use splitting PDF to PDFs function in signature function.
 - [ ] Add details guide to use the toolbox.
