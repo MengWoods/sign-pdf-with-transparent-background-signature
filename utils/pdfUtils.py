@@ -2,6 +2,16 @@
 import PyPDF2
 import os
 import utils.constant as ct
+# from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from pdf2image import convert_from_path
+from PIL import Image
+import cv2
+import numpy as np
+import img2pdf
+# from fpdf import FPDF
 
 def ocrAndSaveTxt(input_pdf):
     pdfFile = open(input_pdf,'rb')
@@ -47,4 +57,69 @@ def watermark(input_pdf, input_watermark, add_to_page):
         pdfOut.add_page(page)
     pdfOut.write(open(input_pdf + "_watermark.pdf", 'wb'))
     ct.logger.info('Watermarked file saved to: %s' % os.path.basename(input_pdf + "_watermark.pdf"))
+
+def signature(input_pdf, input_signature, page, offset_xy, scale):
+    # os.path.splitext("/path/to/some/file.txt")[0]
+    fileName = os.path.basename(input_pdf)
+    fileNameWithoutExtenstion = os.path.splitext(fileName)[0]
+    # fileName = 
+    print(fileNameWithoutExtenstion)
+    ######1 Conver PDF file to temp images
+    images = convert_from_path(input_pdf)
+    pathRela = os.path.dirname(input_pdf)
+    pathAbs = os.path.abspath(pathRela)
+
+    # dir = os.path.dirname(input_pdf)
+
+    pathTemp = pathAbs + "/temp"
+    # print(pathTemp)
+    # print(pathAbs)
+# Check whether the specified path exists or not
+    isExist = os.path.exists(pathTemp)
+    if not isExist:
+        os.makedirs(pathTemp)
+
+    # print(os.path.abspath(input_pdf))
+    # print(input_pdf)
+    # # print(dir)
+
+    for i in range(len(images)):
+        images[i].save(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(i) + '.jpg', 'JPEG')
+
+    pdfPage = cv2.imread(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page) + '.jpg')
+    ######2 Open page and signature with open cv
+    # pdfPage = cv2.cvtColor(np.array(images[page]), cv2.COLOR_RGB2BGR)
+    # # pdfPage = cv2.imread(pathAbs + '/temp/' + fileNameWithoutExtenstion + 'page' + str(page-1) + '.jpg') 
+    signature = cv2.imread(input_signature)
+    # # add shape checking
+    # print(pdfPage.shape)  
+    # print(signature.shape)
+    signatureGray = cv2.cvtColor(signature, cv2.COLOR_BGR2GRAY)
+    signatureCoords = np.column_stack(np.where(signatureGray <= 150))
+    signatureCoords = signatureCoords * scale
+    signatureCoords = signatureCoords + offset_xy
+
+    for coord in signatureCoords:
+        pdfPage[int(coord[0]), int(coord[1])] = 0
+    cv2.imwrite(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page) + '.jpg', pdfPage)
+
+    for image in range(len(images)):
+        image_width, image_height = images[image].size
+        c = canvas.Canvas(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.pdf' , pagesize=(image_width, image_height))
+        c.drawImage(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.jpg', 0, 0, image_width, image_height)
+        os.remove(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.jpg')
+        c.save()
     
+    # Define the directory containing the input PDF files
+    # dir_path = '/path/to/pdf/files'
+    output_pdf = PyPDF2.PdfWriter()
+    for i in range(len(images)):
+        pdf_file = open(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(i) + '.pdf', 'rb')
+        # with open(pdf_file, 'rb') as input:
+        input_pdf_reader = PyPDF2.PdfReader(pdf_file)
+        for page in range(len(input_pdf_reader.pages)):
+            output_pdf.add_page(input_pdf_reader.pages[page])
+
+    with open(input_pdf + '_signed.pdf', 'wb') as output_file:
+        output_pdf.write(output_file)
+

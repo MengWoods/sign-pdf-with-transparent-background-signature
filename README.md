@@ -7,6 +7,9 @@ Manipulate PDF (Portable Document Format) files with functions such as adding si
 - PyPDF2 3.0.1
 - configargparse 1.5.3
 - coloredlogs 15.0.1
+- reportlab 3.6.12
+- pdf2image 1.16.3
+- cv 4.7.0.68
 
 ## Usage
 
@@ -21,10 +24,11 @@ Here are some usage examples assuming you have `a.pdf`, `b.pdf`, `watermark.pdf`
 `python main.py -t watermark -i a.pdf -w watermark.pdf`;
   Add watermark to first (or last) page only
 `python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
+- Signature
 
 ## TODO
 - [x] Add watermark
-- [ ] Add signature assigning postion
+- [x] Add signature assigning postion
 - [ ] Rotate a page
 - [ ] Print basic info of PDF
 - [ ] Separate a PDF to multiple ones
