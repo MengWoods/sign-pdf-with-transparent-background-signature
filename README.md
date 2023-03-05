@@ -1,21 +1,22 @@
 # PDFmanipulation
 
-Manipulate PDF (Portable Document Format) files with functions such as adding signature, merging PDFs, cutting PDFs, OCR, etc.
+Sign PDF file with signature photo, the tool extracts signature trace and merge it into PDF with specific page, postions and scale values.
+
+## Introduction
+
+The tool takes PDF and signature image inputs and output a signed PDF file.
+
+In the picture below, you could see an example of the input photo and output result, the full PDF can be found from [files/example-pdf.pdf_signed.pdf](./files/example-pdf.pdf_signed.pdf):
+![example result](./resource/introduction.png)
 
 ## Requirements
-- Python 3.7
-- PyPDF2 3.0.1
-- configargparse 1.5.3
-- coloredlogs 15.0.1
-- reportlab 3.6.12
-- pdf2image 1.16.3
-- cv 4.7.0.68
+In Python 3.7 environment, install dependencies with `pip install -r requirements.txt`.
 
 ## Usage
 
 Put the input files to `./files` folder, and `python main.py -h` to check arguments meaning.
 
-Here are some usage examples assuming you have `a.pdf`, `b.pdf`, `watermark.pdf` in `./files` folder:
+Here are some usage examples assuming you have input files in the `./files` folder:
 - OCR pdf and save to txt file
  `python main.py -t ocr -i a.pdf`
 - Merge mulitple PDFs into one PDF
@@ -24,11 +25,11 @@ Here are some usage examples assuming you have `a.pdf`, `b.pdf`, `watermark.pdf`
 `python main.py -t watermark -i a.pdf -w watermark.pdf`;
   Add watermark to first (or last) page only
 `python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
-- Signature
+- Sign PDF file with input signature photo, examples can be found from `./files` folder.
+`python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -n 1 -c 0.2 -g 100 -o 1280,1000`
 
 ## TODO
-- [x] Add watermark
-- [x] Add signature assigning postion
-- [ ] Rotate a page
-- [ ] Print basic info of PDF
-- [ ] Separate a PDF to multiple ones
+- [ ] Create class for util codes.
+- [ ] Refine codes with logger information.
+- [ ] Use splitting PDF to PDFs function in signature function.
+- [ ] Add details guide to use the toolbox.

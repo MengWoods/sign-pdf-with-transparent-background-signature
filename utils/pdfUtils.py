@@ -11,7 +11,7 @@ from PIL import Image
 import cv2
 import numpy as np
 import img2pdf
-# from fpdf import FPDF
+from math import floor
 
 def ocrAndSaveTxt(input_pdf):
     pdfFile = open(input_pdf,'rb')
@@ -58,47 +58,28 @@ def watermark(input_pdf, input_watermark, add_to_page):
     pdfOut.write(open(input_pdf + "_watermark.pdf", 'wb'))
     ct.logger.info('Watermarked file saved to: %s' % os.path.basename(input_pdf + "_watermark.pdf"))
 
-def signature(input_pdf, input_signature, page, offset_xy, scale):
-    # os.path.splitext("/path/to/some/file.txt")[0]
+def signature(input_pdf, input_signature, page, offset_xy, scale, gray_threshold):
     fileName = os.path.basename(input_pdf)
     fileNameWithoutExtenstion = os.path.splitext(fileName)[0]
-    # fileName = 
-    print(fileNameWithoutExtenstion)
-    ######1 Conver PDF file to temp images
     images = convert_from_path(input_pdf)
     pathRela = os.path.dirname(input_pdf)
     pathAbs = os.path.abspath(pathRela)
-
-    # dir = os.path.dirname(input_pdf)
-
     pathTemp = pathAbs + "/temp"
-    # print(pathTemp)
-    # print(pathAbs)
-# Check whether the specified path exists or not
     isExist = os.path.exists(pathTemp)
     if not isExist:
         os.makedirs(pathTemp)
-
-    # print(os.path.abspath(input_pdf))
-    # print(input_pdf)
-    # # print(dir)
-
     for i in range(len(images)):
         images[i].save(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(i) + '.jpg', 'JPEG')
 
-    pdfPage = cv2.imread(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page) + '.jpg')
-    ######2 Open page and signature with open cv
-    # pdfPage = cv2.cvtColor(np.array(images[page]), cv2.COLOR_RGB2BGR)
-    # # pdfPage = cv2.imread(pathAbs + '/temp/' + fileNameWithoutExtenstion + 'page' + str(page-1) + '.jpg') 
+    pdfPage = cv2.imread(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page) + '.jpg') 
     signature = cv2.imread(input_signature)
-    # # add shape checking
-    # print(pdfPage.shape)  
-    # print(signature.shape)
+    if signature.shape[0] > pdfPage.shape[0] or signature.shape[1] > pdfPage.shape[1]:
+         scale_ = floor(min(pdfPage.shape[0]/signature.shape[0], pdfPage.shape[1]/signature.shape[1]))
+         if scale > scale_: scale = scale_
     signatureGray = cv2.cvtColor(signature, cv2.COLOR_BGR2GRAY)
-    signatureCoords = np.column_stack(np.where(signatureGray <= 150))
+    signatureCoords = np.column_stack(np.where(signatureGray < gray_threshold))
     signatureCoords = signatureCoords * scale
     signatureCoords = signatureCoords + offset_xy
-
     for coord in signatureCoords:
         pdfPage[int(coord[0]), int(coord[1])] = 0
     cv2.imwrite(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page) + '.jpg', pdfPage)
@@ -109,17 +90,16 @@ def signature(input_pdf, input_signature, page, offset_xy, scale):
         c.drawImage(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.jpg', 0, 0, image_width, image_height)
         os.remove(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.jpg')
         c.save()
-    
-    # Define the directory containing the input PDF files
-    # dir_path = '/path/to/pdf/files'
     output_pdf = PyPDF2.PdfWriter()
     for i in range(len(images)):
         pdf_file = open(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(i) + '.pdf', 'rb')
-        # with open(pdf_file, 'rb') as input:
         input_pdf_reader = PyPDF2.PdfReader(pdf_file)
         for page in range(len(input_pdf_reader.pages)):
             output_pdf.add_page(input_pdf_reader.pages[page])
-
     with open(input_pdf + '_signed.pdf', 'wb') as output_file:
         output_pdf.write(output_file)
+    for file_name in os.listdir(pathAbs + '/temp/'):
+        file_path = os.path.join(pathAbs + '/temp/', file_name)
+        os.remove(file_path)
+    os.rmdir(pathAbs + '/temp/')
 
