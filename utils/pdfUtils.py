@@ -61,17 +61,40 @@ def watermark(input_pdf, input_watermark, add_to_page):
 def signature(input_pdf, input_signature, page, offset_xy, scale, gray_threshold):
     fileName = os.path.basename(input_pdf)
     fileNameWithoutExtenstion = os.path.splitext(fileName)[0]
-    images = convert_from_path(input_pdf)
+    
     pathRela = os.path.dirname(input_pdf)
     pathAbs = os.path.abspath(pathRela)
     pathTemp = pathAbs + "/temp"
     isExist = os.path.exists(pathTemp)
     if not isExist:
         os.makedirs(pathTemp)
-    for i in range(len(images)):
-        images[i].save(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(i) + '.jpg', 'JPEG')
 
-    pdfPage = cv2.imread(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page) + '.jpg') 
+    pdf_reader = PyPDF2.PdfReader(input_pdf)
+    # Get the dimensions (width and height) of the first page in the PDF file
+    page_width = 0
+    page_height = 0
+
+    # Split PDF to multiple ones
+    with open(input_pdf, 'rb') as f:
+        pdf = PyPDF2.PdfReader(f)
+        page_1 = pdf_reader.pages[0]
+        page_width = page_1.mediabox.width
+        page_height = page_1.mediabox.height
+        # Iterate over each page and create a new PDF for each page
+        for page_num in range(len(pdf.pages)):
+            writer = PyPDF2.PdfWriter()
+            writer.add_page(pdf.pages[page_num])
+
+            # Write the new PDF file
+            output_filename = pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page_num) + '.pdf'
+            with open(output_filename, 'wb') as out:
+                writer.write(out)
+
+    image = convert_from_path(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.pdf')
+    image[0].save(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg', 'JPEG')
+    os.remove(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.pdf')
+
+    pdfPage = cv2.imread(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg') 
     signature = cv2.imread(input_signature)
     if signature.shape[0] > pdfPage.shape[0] or signature.shape[1] > pdfPage.shape[1]:
          scale_ = floor(min(pdfPage.shape[0]/signature.shape[0], pdfPage.shape[1]/signature.shape[1]))
@@ -82,16 +105,17 @@ def signature(input_pdf, input_signature, page, offset_xy, scale, gray_threshold
     signatureCoords = signatureCoords + offset_xy
     for coord in signatureCoords:
         pdfPage[int(coord[0]), int(coord[1])] = 0
-    cv2.imwrite(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page) + '.jpg', pdfPage)
+    cv2.imwrite(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg', pdfPage)
+    # convert the image to pdf
+    image_width = page_width
+    image_height = page_height
+    c = canvas.Canvas(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.pdf' , pagesize=(image_width, image_height))
+    c.drawImage(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg', 0, 0, image_width, image_height)
+    os.remove(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg')
+    c.save()
 
-    for image in range(len(images)):
-        image_width, image_height = images[image].size
-        c = canvas.Canvas(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.pdf' , pagesize=(image_width, image_height))
-        c.drawImage(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.jpg', 0, 0, image_width, image_height)
-        os.remove(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(image) + '.jpg')
-        c.save()
     output_pdf = PyPDF2.PdfWriter()
-    for i in range(len(images)):
+    for i in range(len(pdf.pages)):
         pdf_file = open(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(i) + '.pdf', 'rb')
         input_pdf_reader = PyPDF2.PdfReader(pdf_file)
         for page in range(len(input_pdf_reader.pages)):
@@ -102,4 +126,3 @@ def signature(input_pdf, input_signature, page, offset_xy, scale, gray_threshold
         file_path = os.path.join(pathAbs + '/temp/', file_name)
         os.remove(file_path)
     os.rmdir(pathAbs + '/temp/')
-
