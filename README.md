@@ -27,7 +27,7 @@ Here are some usage examples assuming you have input files in the `./files` fold
   Add watermark to first (or last) page only
 `python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
 - Sign PDF file with input signature photo, examples can be found from `./files` folder.
-`python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -n 1 -c 0.2 -g 100 -o 1280,1000`
+`python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -n 2 -c 0.2 -g 100 -o 1280,1000`
 
 ## TODO
 - [ ] Create class for util codes.

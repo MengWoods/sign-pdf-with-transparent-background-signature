@@ -107,10 +107,8 @@ def signature(input_pdf, input_signature, page, offset_xy, scale, gray_threshold
         pdfPage[int(coord[0]), int(coord[1])] = 0
     cv2.imwrite(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg', pdfPage)
     # convert the image to pdf
-    image_width = page_width
-    image_height = page_height
-    c = canvas.Canvas(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.pdf' , pagesize=(image_width, image_height))
-    c.drawImage(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg', 0, 0, image_width, image_height)
+    c = canvas.Canvas(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.pdf' , pagesize=(page_width, page_height))
+    c.drawImage(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg', 0, 0, page_width, page_height)
     os.remove(pathAbs + '/temp/' + fileNameWithoutExtenstion + '_page' + str(page-1) + '.jpg')
     c.save()
 
