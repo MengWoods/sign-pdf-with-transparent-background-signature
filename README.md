@@ -1,4 +1,4 @@
-# signPDF
+# sign-pdf-with-transparent-background-signature
 
 Sign PDF file with signature photo, the tool extracts signature trace and merge it into PDF with specific page, postions and scale values. Besides it, the repo supports other PDF operation such as merge, OCR, watermark functions.
 
