@@ -12,58 +12,56 @@ def parse_two_numbers(value):
     except ValueError:
         raise ValueError('Invalid list format')
 
-con.logger.info("The default folder of input/output files are ./files, put pdfs there for futher processing.")
+con.logger.info("The default folder of input/output files are ./files, put pdfs, signature there for processing.")
 # Read configs
 p = con.configargparse.ArgParser()
+p.add('-b', '--base-path', default='./files', type=str, help='Base path to the PDF files for processing')
 p.add('-t', '--type-of-manipulation', required=True, type=str, \
-      choices=['ocr', 'merge', 'watermark', 'signature', 'toimage'], \
+      choices=['ocr', 'merge', 'split', 'watermark', 'signature'], \
       help="Type of PDF manipulation")
 p.add('-i', '--input-files', required=True, nargs='+', help="Input PDF files name(s), add space between two files")
 p.add('-w', '--watermark-file', type=str, help="Watermark PDF file name")
 p.add('-p', '--watermark-page', type=str, choices=['first', 'last', 'all'], default='all', help="Add watermark to which page")
 p.add('-s', '--signature-file', type=str, help="Sinature picture file name")
-p.add('-n', '--signature-page-num', type=int, help="Signature page number of PDF file")
+p.add('-n', '--signature-page-num', type=int, default=1, help="Signature page number [1, +Inf) of PDF file")
 p.add('-o', '--signature-offset-xy', type=parse_two_numbers, default=[0,0], help="Offset of x and y coordinates of the signature")
 p.add('-c', '--signature-scale', type=float, default=1, help="Scale (0,+inf) the input sgnature file, set it to negative value if need rotate signature")
 p.add('-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image, higher value, lower gray threshold")
 options = p.parse_args()
 
 def main():
-    BASE_PATH = './files/'
+    pdf_utils = ut.pdfUtils(options.base_path, options.input_files)
 
     if options.type_of_manipulation == 'ocr':
-        if len(options.input_files) == 1:
-            ut.ocrAndSaveTxt(BASE_PATH + options.input_files[0])
-        else:
-            con.logger.error("OCR manipulation accepts 1 input file per time!")
-
+        pdf_utils.ocrAndSaveTxt()
     elif options.type_of_manipulation == 'merge':
         if len(options.input_files) == 1:
-            con.logger.error("Merge manipulation need at least 2 input files!")
+            con.logger.error("Merge operation needs at least 2 input files!")
         else:
-            inputs = []
-            for i in range(len(options.input_files)):
-                inputs.append(BASE_PATH + options.input_files[i])
-            ut.mergeFiles(inputs, inputs[0] + '_merged.pdf')
-    
+            pdf_utils.mergePdfs()
+    elif options.type_of_manipulation == 'split':
+        if len(options.input_files) == 1:
+            pdf_utils.splitPdf()
+        else:
+            con.logger.error("Split operation needs at max 1 input file!")
     elif options.type_of_manipulation == 'watermark':
-        if len(options.input_files) == 1:
-            ut.watermark(BASE_PATH + options.input_files[0], \
-                         BASE_PATH + options.watermark_file, \
-                         options.watermark_page)
+        if options.watermark_file == None:
+            con.logger.error("Watermark file is needed as one input!")
+        elif len(options.input_files) == 1:
+            pdf_utils.watermark(options.watermark_file, options.watermark_page)
         else:
-            con.logger.error("Watermark manipulation accepts 1 input file per time!")
-
+            con.logger.error("Watermark operation needs at max 1 input file!")
     elif options.type_of_manipulation == 'signature':
-        if len(options.input_files) == 1:
-            ut.signature(BASE_PATH + options.input_files[0], \
-                         BASE_PATH + options.signature_file, \
-                         options.signature_page_num,\
-                         options.signature_offset_xy,\
-                         options.signature_scale,\
-                         options.gray_threshold)
+        if options.signature_file == None:
+            con.logger.error("Signature file is needed as one input!")
+        elif len(options.input_files) == 1:
+            pdf_utils.signature(options.signature_file, \
+                                options.signature_page_num,\
+                                options.signature_offset_xy,\
+                                options.signature_scale,\
+                                options.gray_threshold)
         else:
-            con.logger.error("Watermark manipulation accepts 1 input file per time!")
+            con.logger.error("Signature operation needs at max 1 input file!")
 
 if __name__ == "__main__":
     main()
