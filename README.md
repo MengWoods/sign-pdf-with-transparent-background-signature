@@ -50,10 +50,13 @@ Here are some other usage examples assuming you have input files in the `./files
  `python main.py -t ocr -i a.pdf`
 - Merge mulitple PDFs into one PDF
  `python main.py -t merge -i a.pdf b.pdf`
+- Split one PDF to multiple PDFs
+ `python main.py -t split -i a.pdf`
 - Add watermark to all pages of PDF file
 `python main.py -t watermark -i a.pdf -w watermark.pdf`;
   Add watermark to first (or last) page only
 `python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
 ## TODO
-- [ ] Add details guide to use the toolbox.
+- [ ] Add detailed guide to use the toolbox.
+- [ ] Convert signature picture to GIF with transparent background, it can be used in Word doc.
 - [ ] Add frontend webpage.
