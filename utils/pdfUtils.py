@@ -131,7 +131,7 @@ class pdfUtils:
         cv2.imwrite(page_to_be_signed + '.jpg', cv_page)
         # Convert cv page to PDF page
         c = canvas.Canvas(page_to_be_signed + '.pdf' , pagesize=(page_width, page_height))
-        c.drawImage(page_to_be_signed + '.jpg', 0, 0, page_width, page_height)
+        c.drawImage(page_to_be_signed + '.jpg', 0, 0, float(page_width), float(page_height))
         os.remove(page_to_be_signed + '.jpg')
         c.save()
         # Merge PDFs to PDF and save

@@ -50,10 +50,24 @@ Here are some other usage examples assuming you have input files in the `./files
  `python main.py -t ocr -i a.pdf`
 - Merge mulitple PDFs into one PDF
  `python main.py -t merge -i a.pdf b.pdf`
+- Split one PDF to multiple PDFs
+ `python main.py -t split -i a.pdf`
 - Add watermark to all pages of PDF file
 `python main.py -t watermark -i a.pdf -w watermark.pdf`;
   Add watermark to first (or last) page only
 `python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
+
+## Troubleshooting
+- `    cv_page[int(coord[0]), int(coord[1])] = 0
+IndexError: index 1688 is out of bounds for axis 1 with size 1654`
+
+  Decrease the scale of signature such as `-c 0.3`
 ## TODO
-- [ ] Add details guide to use the toolbox.
+- [ ] Add detailed guide to use the toolbox.
+- [ ] Convert signature picture to GIF with transparent background, it can be used in Word doc.
+- [ ] Publish Pypi package.
 - [ ] Add frontend webpage.
+- [ ] Add .venv to the repo
+- [ ] After converting, the file size is increased. Find reason and solve it.
+- [ ] Change offset position to proportion.
+
