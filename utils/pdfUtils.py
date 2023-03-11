@@ -117,10 +117,6 @@ class pdfUtils:
         cv_page = cv2.imread(page_to_be_signed + '.jpg')
         cv_signature = cv2.imread(self.absolute_path + '/' + input_signature)
         # Size check
-        print ("cv signatrue shape", cv_signature.shape)
-        print ("cv page shape", cv_page.shape)
-        print("0:", cv_page.shape[0]/cv_signature.shape[0])
-        print("1", cv_page.shape[1]/cv_signature.shape[1])
         if cv_signature.shape[0] > cv_page.shape[0] or cv_signature.shape[1] > cv_page.shape[1]:
             scale_min = min(cv_page.shape[0]/cv_signature.shape[0], cv_page.shape[1]/cv_signature.shape[1])
             if scale > scale_min: scale = scale_min
@@ -132,9 +128,10 @@ class pdfUtils:
         indices = np.where(cv_signature == 0)
         # Convert the indices to pixel coordinates
         signature_coords = np.transpose(indices)
-        print("scale:", scale)
         signature_coords = signature_coords * scale
-        signature_coords = signature_coords + offset_xy
+        offset_x_pos = cv_page.shape[0] - cv_signature.shape[0] * scale
+        offset_y_pos = cv_page.shape[1] - cv_signature.shape[1] * scale
+        signature_coords = signature_coords + [offset_x_pos * offset_xy[0], offset_y_pos * offset_xy[1]]
         # Plot signature to cv page
         for coord in signature_coords:
             cv_page[int(coord[0]), int(coord[1])] = 0

@@ -12,7 +12,7 @@ In the picture above, you could see an example of the input photo and output res
 
 
 ## Requirements
-In Python 3.7 environment, install dependencies with `pip install -r requirements.txt`.
+In Python 3.X environment, install dependencies with `pip install -r requirements.txt`.
 
 ## Usage
 
@@ -26,7 +26,7 @@ Here lists essential arguments for signing PDF:
 '-i', '--input-files', required=True, nargs='+', help="Input PDF files name(s), add space between two files"
 '-s', '--signature-file', type=str, help="Sinature picture file name"
 '-n', '--signature-page-num', type=int, default=1, help="Signature page number [1, +Inf) of PDF file"
-'-o', '--signature-offset-xy', type=parse_two_numbers, default=[0,0], help="Offset of x and y coordinates of the signature"
+'-o', '--signature-offset-xy', type=parse_two_numbers, default=[0,0], help="Offset proportion of x and y coordinates of the signature. Range is [0,1]"
 '-c', '--signature-scale', type=float, default=1, help="Scale (0,+inf) the input sgnature file, set it to negative value if need rotate signature"
 '-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image"
 ```
@@ -35,13 +35,15 @@ Here lists essential arguments for signing PDF:
 
 - Take a signature photo such as the [example](./files/example-signature.jpg).
 - Put the signature photo and PDF file to `./files` folder.
-- Select the signature page (`-n`), gray threshold (`-g`), scale (`-c`), and offset positions (`-o`), the later two arguments might need try a few times to get best results.
+- Select the signature page (`-n`), gray threshold (`-g`), scale (`-c`), and offset proportions (`-o`), the later two arguments might need try a few times to get best results.
   - Page starts from 1.
   - Gray threshold's range is [0, 255], it is used to extract signature from photo, the default value should be enough for most cases. If not, adjust it and check result. 
   - Scale's range is [0, +inf), usually needs to decrease the signature size such as 0.3. Set it to negative value will rotate signature.
-  - Offset position is in X,Y oder, the top-left corner of the PDF page is the origin, Y is horizontal and X is vertical.
+  - Offset proportion is in X,Y oder, the top-left corner of the PDF page is the origin, Y is horizontal and X is vertical. Range is [0,1]
 - With above, run the program to sign signature. The examples signed [PDF](./files/example-pdf_signed.pdf) uses this command:
-`python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -c 0.2 -n 2 -o 1310,1000`
+  ```
+  python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -c 0.2 -n 2 -o 0.65,0.72
+  ```
 
 ### Other functions
 
@@ -57,17 +59,9 @@ Here are some other usage examples assuming you have input files in the `./files
   Add watermark to first (or last) page only
 `python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
 
-## Troubleshooting
-- `    cv_page[int(coord[0]), int(coord[1])] = 0
-IndexError: index 1688 is out of bounds for axis 1 with size 1654`
-
-  Decrease the scale of signature such as `-c 0.3`
 ## TODO
-- [ ] Add detailed guide to use the toolbox.
-- [ ] Convert signature picture to GIF with transparent background, it can be used in Word doc.
 - [ ] Publish Pypi package.
 - [ ] Add frontend webpage.
 - [ ] Add .venv to the repo
 - [ ] After converting, the file size is increased. Find reason and solve it.
-- [ ] Change offset position to proportion.
 
