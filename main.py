@@ -26,7 +26,7 @@ p.add('-s', '--signature-file', type=str, help="Sinature picture file name")
 p.add('-n', '--signature-page-num', type=int, default=1, help="Signature page number [1, +Inf) of PDF file")
 p.add('-o', '--signature-offset-xy', type=parse_two_numbers, default=[0,0], help="Offset of x and y coordinates of the signature")
 p.add('-c', '--signature-scale', type=float, default=1, help="Scale (0,+inf) the input sgnature file, set it to negative value if need rotate signature")
-p.add('-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image, higher value, lower gray threshold")
+p.add('-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image")
 options = p.parse_args()
 
 def main():

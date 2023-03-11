@@ -28,7 +28,7 @@ Here lists essential arguments for signing PDF:
 '-n', '--signature-page-num', type=int, default=1, help="Signature page number [1, +Inf) of PDF file"
 '-o', '--signature-offset-xy', type=parse_two_numbers, default=[0,0], help="Offset of x and y coordinates of the signature"
 '-c', '--signature-scale', type=float, default=1, help="Scale (0,+inf) the input sgnature file, set it to negative value if need rotate signature"
-'-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image, higher value, lower gray threshold"
+'-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image"
 ```
 
 ### Signature
