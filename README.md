@@ -4,12 +4,13 @@ Sign PDF file with signature photo, the tool extracts signature trace and merge 
 
 ## Introduction
 
-The tool takes PDF and signature image inputs and output a signed PDF file.
+The tool takes PDF and signature image inputs and output a signed PDF file. 
 
 ![example result](./resource/introduction.png)
 
 In the picture above, you could see an example of the input photo and output result, the full signed PDF can be found from [files/example-pdf_signed.pdf](./files/example-pdf_signed.pdf):
 
+The motivation for creating this offline software is that most online signing websites have started to charge or limit the number of uses. The project allows you unlimited usage without any restrictions. After testing, the tool works well and can replace many online signing websites. If any problem is found in using, please submit an issue, and if you like it or feel it is helpful, please star the project. Thanks for your contributions.
 
 ## Requirements
 In Python 3.X environment, install dependencies with `pip install -r requirements.txt`.
@@ -64,4 +65,5 @@ Here are some other usage examples assuming you have input files in the `./files
 - [ ] Add frontend webpage.
 - [ ] Add .venv to the repo
 - [ ] After converting, the file size is increased. Find reason and solve it.
+
 
