@@ -10,7 +10,7 @@ The tool takes PDF and signature image inputs and output a signed PDF file.
 
 In the picture above, you could see an example of the input photo and output result, the full signed PDF can be found from [files/example-pdf_signed.pdf](./files/example-pdf_signed.pdf):
 
-The motivation for creating this offline software is that most online signing websites have started to charge or limit the number of uses. The project allows you unlimited usage without any restrictions. After testing, the tool works well and can replace many online signing websites. If any problem is found in using, please submit an issue, and if you like it or feel it is helpful, please star the project. Thanks for your contributions.
+The motivation for creating this offline software is that most online signing websites have started to charge or limit the number of uses. The project allows you unlimited usage without any restrictions. After testing, the tool works well and can replace many online signing websites. If any problem is found in using, please open an issue, and if you like it or feel it is helpful, please consider star the project. Thanks for your contributions.
 
 ## Requirements
 In Python 3.X environment, install dependencies with `pip install -r requirements.txt`.
@@ -40,12 +40,12 @@ Here lists essential arguments for signing PDF:
   - Page starts from 1.
   - Gray threshold's range is [0, 255], it is used to extract signature from photo, the default value should be enough for most cases. If not, adjust it and check result. 
   - Scale's range is [0, +inf), usually needs to decrease the signature size such as 0.3. Set it to negative value will rotate signature.
-  - Offset proportion is in X,Y oder, the top-left corner of the PDF page is the origin, Y is horizontal and X is vertical. Range is [0,1]
+  - Offset proportion is in X,Y oder, the top-left corner of the PDF page is the origin, Y is horizontal and X is vertical. Range is [0,1]. See below picture for a reference.
 - With above, run the program to sign signature. The examples signed [PDF](./files/example-pdf_signed.pdf) uses this command:
   ```
   python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -c 0.2 -n 2 -o 0.65,0.72
   ```
-
+![position reference](./resource/position_refer.png)
 ### Other functions
 
 Here are some other usage examples assuming you have input files in the `./files` folder:
