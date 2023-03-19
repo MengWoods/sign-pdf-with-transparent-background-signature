@@ -41,11 +41,16 @@ Here lists essential arguments for signing PDF:
   - Gray threshold's range is [0, 255], it is used to extract signature from photo, the default value should be enough for most cases. If not, adjust it and check result. 
   - Scale's range is [0, +inf), usually needs to decrease the signature size such as 0.3. Set it to negative value will rotate signature.
   - Offset proportion is in X,Y oder, the top-left corner of the PDF page is the origin, Y is horizontal and X is vertical. Range is [0,1]. See below picture for a reference.
+<p align="center">
+    <a href="https:/" target="_blank" rel="noopener noreferrer">
+        <img width="300" src="resource/position_refer.png" alt="PDFium Library Logo">
+    </a>
+</p>
+
 - With above, run the program to sign signature. The examples signed [PDF](./files/example-pdf_signed.pdf) uses this command:
   ```
   python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -c 0.2 -n 2 -o 0.65,0.72
   ```
-![position reference](./resource/position_refer.png)
 ### Other functions
 
 Here are some other usage examples assuming you have input files in the `./files` folder:
