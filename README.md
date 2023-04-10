@@ -1,6 +1,8 @@
 # sign-pdf-with-transparent-background-signature
 
-Sign PDF file with signature photo, the tool extracts signature trace and merge it into PDF with specific page, postions and scale values. Besides it, the repo supports other PDF operation such as merge, OCR, watermark functions.
+Sign PDF file with signature photo input, the tool extracts signature trace and merge it into PDF with specific page, postions and scale values. 
+
+Besides it, the repo supports other operations such as PDF's merging, splitting, OCR, watermarking, and make transparent signature picture based on the input photo.
 
 ## Introduction
 
@@ -9,8 +11,6 @@ The tool takes PDF and signature image inputs and output a signed PDF file.
 ![example result](./resource/introduction.png)
 
 In the picture above, you could see an example of the input photo and output result, the full signed PDF can be found from [files/example-pdf_signed.pdf](./files/example-pdf_signed.pdf):
-
-The motivation for creating this offline software is that most online signing websites have started to charge or limit the number of uses. The project allows you unlimited usage without any restrictions. After testing, the tool works well and can replace many online signing websites. If any problem is found in using, please open an issue, and if you like it or feel it is helpful, please consider star the project. Thanks for your contributions.
 
 ## Requirements
 In Python 3.X environment, install dependencies with `pip install -r requirements.txt`.
@@ -22,17 +22,18 @@ Here lists essential arguments for signing PDF:
 ```python
 '-b', '--base-path', default='./files', type=str, help='Base path to the PDF files for processing'
 '-t', '--type-of-manipulation', required=True, type=str, \
-              choices=['ocr', 'merge', 'split', 'watermark', 'signature'], \
-              help="Type of PDF manipulation"
+      choices=['ocr', 'merge', 'split', 'watermark', 'signature', 'make-signature']
 '-i', '--input-files', required=True, nargs='+', help="Input PDF files name(s), add space between two files"
 '-s', '--signature-file', type=str, help="Sinature picture file name"
 '-n', '--signature-page-num', type=int, default=1, help="Signature page number [1, +Inf) of PDF file"
 '-o', '--signature-offset-xy', type=parse_two_numbers, default=[0,0], help="Offset proportion of x and y coordinates of the signature. Range is [0,1]"
 '-c', '--signature-scale', type=float, default=1, help="Scale (0,+inf) the input sgnature file, set it to negative value if need rotate signature"
 '-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image"
+# The color is only used for signature file generation use.
+'--color', type=str, default='black', help='Define the color of output signature'
 ```
 
-### Signature
+### Sign name to PDF
 
 - Take a signature photo such as the [example](./files/example-signature.jpg).
 - Put the signature photo and PDF file to `./files` folder.
@@ -51,7 +52,7 @@ Here lists essential arguments for signing PDF:
   ```
   python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -c 0.2 -n 2 -o 0.65,0.72
   ```
-### Other functions
+### Other supported operations
 
 Here are some other usage examples assuming you have input files in the `./files` folder:
 - OCR pdf and save to txt file
@@ -64,6 +65,10 @@ Here are some other usage examples assuming you have input files in the `./files
 `python main.py -t watermark -i a.pdf -w watermark.pdf`;
   Add watermark to first (or last) page only
 `python main.py -t watermakr -i a.pdf -w watermark.pdf -p first`
+
+To create transparent-background signature in GIF format assuming the input photo is in the `./files` folder:
+ - Typical operation
+ `python main.py -t make-signature -i example-signature.jpg --color blue`
 
 ## TODO
 - [ ] Publish Pypi package.

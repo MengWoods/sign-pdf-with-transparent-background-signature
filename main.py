@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # Internal libs
 import utils.pdfUtils as ut
+import utils.imgUtils as imgut
 import utils.constant as con
 
 def parse_two_numbers(value):
@@ -17,9 +18,9 @@ con.logger.info("The default folder of input/output files are ./files, put pdfs,
 p = con.configargparse.ArgParser()
 p.add('-b', '--base-path', default='./files', type=str, help='Base path to the PDF files for processing')
 p.add('-t', '--type-of-manipulation', required=True, type=str, \
-      choices=['ocr', 'merge', 'split', 'watermark', 'signature'], \
-      help="Type of PDF manipulation")
-p.add('-i', '--input-files', required=True, nargs='+', help="Input PDF files name(s), add space between two files")
+      choices=['ocr', 'merge', 'split', 'watermark', 'signature', 'make-signature'], \
+      help="Type of PDF/Img manipulation")
+p.add('-i', '--input-files', required=True, nargs='+', help="Input PDF or Img file name(s), add space between two files")
 p.add('-w', '--watermark-file', type=str, help="Watermark PDF file name")
 p.add('-p', '--watermark-page', type=str, choices=['first', 'last', 'all'], default='all', help="Add watermark to which page")
 p.add('-s', '--signature-file', type=str, help="Sinature picture file name")
@@ -27,6 +28,9 @@ p.add('-n', '--signature-page-num', type=int, default=1, help="Signature page nu
 p.add('-o', '--signature-offset-xy', type=parse_two_numbers, default=[0,0], help="Offset proportion of x and y coordinates of the signature. Range is [0,1]")
 p.add('-c', '--signature-scale', type=float, default=1, help="Scale (0,+inf) the input sgnature file, set it to negative value if need rotate signature")
 p.add('-g', '--gray-threshold', type=float, default=100, help="Gray threshold [0,255] to process signature image")
+# The color is only used for signature file generation use.
+p.add('--color', type=str, default='black', help='Define the color of output signature')
+
 options = p.parse_args()
 
 def main():
@@ -62,6 +66,12 @@ def main():
                                 options.gray_threshold)
         else:
             con.logger.error("Signature operation needs at max 1 input file!")
+    elif options.type_of_manipulation == 'make-signature':
+        image_utils = imgut.imgUtils(options.base_path, \
+                                options.input_files, \
+                                options.gray_threshold, \
+                                options.color)
+        image_utils.process()
 
 if __name__ == "__main__":
     main()
