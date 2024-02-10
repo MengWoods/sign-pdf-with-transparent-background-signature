@@ -13,7 +13,11 @@ The tool takes PDF and signature image inputs and output a signed PDF file.
 In the picture above, you could see an example of the input photo and output result, the full signed PDF can be found from [files/example-pdf_signed.pdf](./files/example-pdf_signed.pdf):
 
 ## Requirements
-In Python 3.X environment, install dependencies with `pip install -r requirements.txt`.
+- If you have virtual env installed [Virtualenv](https://virtualenv.pypa.io/en/latest/): 
+  - In the repository root path, activate virtual python envrionment by `source .venv/bin/activate`. 
+
+- Or if you prefer to install dependencies yourself:
+  - In Python 3.X environment, install by `pip install -r requirements.txt` in repository root path.
 
 ## Usage
 
@@ -52,6 +56,10 @@ Here lists essential arguments for signing PDF:
   ```
   python main.py -t signature -i example-pdf.pdf -s example-signature.jpg -c 0.2 -n 2 -o 0.65,0.72
   ```
+- One reference command:
+  ```bash
+  python main.py -t signature -i 1.pdf -s name_photo.jpg -c 0.26 -n 3 -o 0.26,0.6 -g 150
+  ```
 ### Other supported operations
 
 Here are some other usage examples assuming you have input files in the `./files` folder:
@@ -73,7 +81,7 @@ To create transparent-background signature in GIF format assuming the input phot
 ## TODO
 - [ ] Publish Pypi package.
 - [ ] Add frontend webpage.
-- [ ] Add .venv to the repo
+- [x] Add .venv to the repo
 - [ ] After converting, the file size is increased. Find reason and solve it.
 
 
