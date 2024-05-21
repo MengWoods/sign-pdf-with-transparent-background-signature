@@ -26,7 +26,7 @@ Here lists essential arguments for signing PDF:
 ```python
 '-b', '--base-path', default='./files', type=str, help='Base path to the PDF files for processing'
 '-t', '--type-of-manipulation', required=True, type=str, \
-      choices=['ocr', 'merge', 'split', 'watermark', 'signature', 'make-signature']
+      choices=['ocr', 'merge', 'split', 'split2image', 'watermark', 'signature', 'make-signature']
 '-i', '--input-files', required=True, nargs='+', help="Input PDF files name(s), add space between two files"
 '-s', '--signature-file', type=str, help="Sinature picture file name"
 '-n', '--signature-page-num', type=int, default=1, help="Signature page number [1, +Inf) of PDF file"
@@ -69,6 +69,8 @@ Here are some other usage examples assuming you have input files in the `./files
  `python main.py -t merge -i a.pdf b.pdf`
 - Split one PDF to multiple PDFs
  `python main.py -t split -i a.pdf`
+- Split one PDF to multiple PNG images
+  `python main.py -t split2image -i a.pdf`
 - Add watermark to all pages of PDF file
 `python main.py -t watermark -i a.pdf -w watermark.pdf`;
   Add watermark to first (or last) page only

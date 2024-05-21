@@ -18,7 +18,7 @@ con.logger.info("The default folder of input/output files are ./files, put pdfs,
 p = con.configargparse.ArgParser()
 p.add('-b', '--base-path', default='./files', type=str, help='Base path to the PDF files for processing')
 p.add('-t', '--type-of-manipulation', required=True, type=str, \
-      choices=['ocr', 'merge', 'split', 'watermark', 'signature', 'make-signature'], \
+      choices=['ocr', 'merge', 'split', 'split2image', 'watermark', 'signature', 'make-signature'], \
       help="Type of PDF/Img manipulation")
 p.add('-i', '--input-files', required=True, nargs='+', help="Input PDF or Img file name(s), add space between two files")
 p.add('-w', '--watermark-file', type=str, help="Watermark PDF file name")
@@ -46,6 +46,11 @@ def main():
     elif options.type_of_manipulation == 'split':
         if len(options.input_files) == 1:
             pdf_utils.splitPdf()
+        else:
+            con.logger.error("Split operation needs at max 1 input file!")
+    elif options.type_of_manipulation == 'split2image':
+        if len(options.input_files) == 1:
+            pdf_utils.split2image()
         else:
             con.logger.error("Split operation needs at max 1 input file!")
     elif options.type_of_manipulation == 'watermark':

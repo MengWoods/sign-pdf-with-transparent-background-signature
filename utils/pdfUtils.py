@@ -20,7 +20,7 @@ class pdfUtils:
     def __init__(self, base_path, pdf_file_list):
         self.file_name_list = pdf_file_list
         self.file_name = os.path.basename(pdf_file_list[0])
-        self.file_name_without_extenstion = os.path.splitext(self.file_name)[0]
+        self.file_name_without_extension = os.path.splitext(self.file_name)[0]
         self.relative_path = base_path
         self.absolute_path = os.path.abspath(self.relative_path)
     
@@ -44,7 +44,7 @@ class pdfUtils:
             ct.logger.info('Loading file: %s' % self.file_name_list[i])
             with open(self.absolute_path + '/' + self.file_name_list[i], 'rb') as pdf:
                 pdf_merger.append(pdf)
-        output_path = self.absolute_path + '/' + self.file_name_without_extenstion + '_merged.pdf'
+        output_path = self.absolute_path + '/' + self.file_name_without_extension + '_merged.pdf'
         with open(output_path,'wb') as f:
             pdf_merger.write(f)
         ct.logger.info('Merged file is saved to: %s' % output_path)
@@ -58,10 +58,28 @@ class pdfUtils:
                 writer.add_page(pdf_reader.pages[page_num])
                 # Write the new PDF file
                 output_path = self.absolute_path + '/' + \
-                    self.file_name_without_extenstion + '_page_' + str(page_num) + '.pdf'
+                    self.file_name_without_extension + '_page_' + str(page_num) + '.pdf'
                 with open(output_path, 'wb') as out:
                     writer.write(out)
         ct.logger.info('Split files are saved to: %s' % self.absolute_path)
+
+    def split2image(self):
+        # Ensure output directory exists
+        output_dir = os.path.join(self.absolute_path, 'images')
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        # Convert each split PDF page to an image
+        for page_num in range(len(self.file_name_list)):
+            pdf_path = os.path.join(self.absolute_path, f'{self.file_name_without_extension}_page_{page_num}.pdf')
+            images = convert_from_path(pdf_path)
+            
+            # Save each page image
+            for i, image in enumerate(images):
+                image_path = os.path.join(output_dir, f'{self.file_name_without_extension}_page_{page_num}.png')
+                image.save(image_path, 'PNG')
+
+        ct.logger.info('Images are saved to: %s' % output_dir)
 
     def watermark(self, input_watermark, add_to_page):
         pdf_out = PdfWriter()
@@ -84,7 +102,7 @@ class pdfUtils:
                 page.compress_content_streams()
                 pdf_out.add_page(page)
             output_path = self.absolute_path + '/' + \
-                    self.file_name_without_extenstion + '_watermark.pdf'
+                    self.file_name_without_extension + '_watermark.pdf'
             with open(output_path, 'wb') as out:
                 pdf_out.write(out)
             ct.logger.info('Watermarked file is saved to: %s' % output_path)
@@ -106,11 +124,11 @@ class pdfUtils:
                 writer = PdfWriter()
                 writer.add_page(pdf_reader.pages[page_num])
                 # Write the new PDF file
-                output_filename = temp_path + '/' + self.file_name_without_extenstion + '_page_' + str(page_num) + '.pdf'
+                output_filename = temp_path + '/' + self.file_name_without_extension + '_page_' + str(page_num) + '.pdf'
                 with open(output_filename, 'wb') as out:
                     writer.write(out)
         # Image processing
-        page_to_be_signed = temp_path + '/' + self.file_name_without_extenstion + '_page_' + str(page-1)
+        page_to_be_signed = temp_path + '/' + self.file_name_without_extension + '_page_' + str(page-1)
         images = convert_from_path(page_to_be_signed + '.pdf')
         images[0].save(page_to_be_signed + '.jpg', 'JPEG')
         os.remove(page_to_be_signed + '.pdf')
@@ -144,12 +162,12 @@ class pdfUtils:
         # Merge PDFs to PDF and save
         output_pdf = PyPDF2.PdfWriter()
         for i in range(len(pdf_reader.pages)):
-            pdf_file = open(temp_path + '/' + self.file_name_without_extenstion + '_page_' + str(i) + '.pdf', 'rb')
+            pdf_file = open(temp_path + '/' + self.file_name_without_extension + '_page_' + str(i) + '.pdf', 'rb')
             input_pdf_reader = PdfReader(pdf_file)
             for page in range(len(input_pdf_reader.pages)):
                 output_pdf.add_page(input_pdf_reader.pages[page])
         output_path = self.absolute_path + '/' + \
-                    self.file_name_without_extenstion + '_signed.pdf'
+                    self.file_name_without_extension + '_signed.pdf'
         with open(output_path, 'wb') as output_file:
             output_pdf.write(output_file)
         for file_name in os.listdir(temp_path):
